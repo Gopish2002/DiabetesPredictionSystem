@@ -1,6 +1,7 @@
 import pandas as pd 
 import numpy as np 
 from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.metrics import accuracy_score
@@ -31,11 +32,12 @@ print(X_train)
 print(Y_train)
 
 # MODEL TRAINING 
+pipeline = Pipeline([
+    ('scalar', StandardScaler()),
+    ('classifier' , svm.SVC(kernel='linear'))
+    ])
 
-classifier = svm.SVC(kernel='linear')
-# training the Support Vector Machine Classifier
-
-classifier.fit(X_train,Y_train)
+pipeline.fit(X_train,Y_train)
 
 
 # MODEL EVALUATION
@@ -43,13 +45,13 @@ classifier.fit(X_train,Y_train)
 # Accuracy score 
 # Accuracy on training data
 
-X_train_prediction = classifier.predict(X_train)
+X_train_prediction = pipeline.predict(X_train)
 training_data_accuracy = accuracy_score(X_train_prediction,Y_train)
 print(f"Accuracy on training data : {training_data_accuracy}")
 
 # Accuracy on test data
 
-X_test_prediction = classifier.predict(X_test)
+X_test_prediction = pipeline.predict(X_test)
 test_data_accuracy = accuracy_score(X_test_prediction,Y_test)
 print(f"Accuracy on test data : {test_data_accuracy}")
 
@@ -64,7 +66,7 @@ reshaped_dataset = numpy_array.reshape(1,-1)
 
 input_dataframe = pd.DataFrame(reshaped_dataset, columns=columns)  
 
-prediction = classifier.predict(input_dataframe)
+prediction = pipeline.predict(input_dataframe)
 
 if (prediction[0] == 0):
     print("The person is not diabetic")
@@ -73,7 +75,7 @@ else:
 
 # PICKLING THE MODEL
 
-pickle.dump(classifier,open('classifer_model.pkl','wb'))
+pickle.dump(pipeline,open('classifer_model.pkl','wb'))
 loaded_model = pickle.load(open('classifer_model.pkl','rb'))
 
 prediction= loaded_model.predict(input_dataframe)
