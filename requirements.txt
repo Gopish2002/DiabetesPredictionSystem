@@ -1,4 +1,4 @@
-sklearn
 streamlit
+sklearn
 pandas
 numpy
